@@ -48,20 +48,7 @@ export default function SearchPage() {
   return (
     <AppShell>
       <div className="flex flex-col" style={{ height: "calc(100vh - 60px)" }}>
-        {/* ── Slim header: title + toggle ── */}
-        <header className="shrink-0 px-4 py-2 flex items-center gap-4" style={{ borderBottom: "1px solid var(--color-border)", background: "var(--color-surface)" }}>
-          <h1 className="text-base font-bold" style={{ color: "var(--color-text)" }}>Search</h1>
-          <div className="inline-flex rounded-full p-0.5" style={{ background: "var(--color-surface-secondary)" }}>
-            <button onClick={() => setMode("chat")} className="flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all" style={{ background: mode === "chat" ? "var(--color-surface-elevated)" : "transparent", color: mode === "chat" ? "var(--color-text)" : "var(--color-text-muted)", boxShadow: mode === "chat" ? "var(--shadow-sm)" : "none" }}>
-              <MessageSquare className="h-3 w-3" /> Chat
-            </button>
-            <button onClick={() => setMode("manual")} className="flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all" style={{ background: mode === "manual" ? "var(--color-surface-elevated)" : "transparent", color: mode === "manual" ? "var(--color-text)" : "var(--color-text-muted)", boxShadow: mode === "manual" ? "var(--shadow-sm)" : "none" }}>
-              <SlidersHorizontal className="h-3 w-3" /> Manual
-            </button>
-          </div>
-        </header>
-
-        {/* ── Two-column: 75% chat | 25% sidebar ── */}
+        {/* ── Two-column: 75% chat | 25% sidebar (no header - navbar is enough) ── */}
         <div className="flex-1 min-h-0 flex">
           {/* LEFT: Chat (75%) */}
           <main className="min-h-0 overflow-hidden" style={{ flex: "3" }}>
@@ -87,6 +74,16 @@ export default function SearchPage() {
 
           {/* RIGHT: Sidebar (25%) */}
           <aside className="shrink-0 hidden lg:flex flex-col gap-3 p-4 overflow-y-auto" style={{ width: "280px", borderLeft: "1px solid var(--color-border)", background: "var(--color-surface)" }}>
+            {/* Mode toggle */}
+            <div className="inline-flex rounded-full p-0.5 self-stretch" style={{ background: "var(--color-surface-secondary)" }}>
+              <button onClick={() => setMode("chat")} className="flex-1 flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all" style={{ background: mode === "chat" ? "var(--color-surface-elevated)" : "transparent", color: mode === "chat" ? "var(--color-text)" : "var(--color-text-muted)", boxShadow: mode === "chat" ? "var(--shadow-sm)" : "none" }}>
+                <MessageSquare className="h-3 w-3" /> Chat
+              </button>
+              <button onClick={() => setMode("manual")} className="flex-1 flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all" style={{ background: mode === "manual" ? "var(--color-surface-elevated)" : "transparent", color: mode === "manual" ? "var(--color-text)" : "var(--color-text-muted)", boxShadow: mode === "manual" ? "var(--shadow-sm)" : "none" }}>
+                <SlidersHorizontal className="h-3 w-3" /> Manual
+              </button>
+            </div>
+
             {/* Credits */}
             <div className="rounded-xl p-4" style={{ background: "var(--color-surface-elevated)", border: "1px solid var(--color-border)" }}>
               <div className="flex items-center gap-2 mb-3">
