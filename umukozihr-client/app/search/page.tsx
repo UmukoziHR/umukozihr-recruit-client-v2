@@ -38,12 +38,7 @@ export default function SearchPage() {
   const creditCost = deepResearch ? 3 : 1;
   const searchComplete = step === "complete" && candidates.length > 0;
 
-  useEffect(() => {
-    if (searchComplete && searchId) {
-      const timer = setTimeout(() => { window.location.href = `/results?id=${searchId}`; }, 4000);
-      return () => clearTimeout(timer);
-    }
-  }, [searchComplete, searchId]);
+  // No auto-redirect - let the user click "View Results" naturally in chat
 
   return (
     <AppShell flush>

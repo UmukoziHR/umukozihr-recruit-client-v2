@@ -76,6 +76,31 @@ body {
   outline-offset: 2px;
 }
 
+/* === Inputs: dark mode compatible === */
+input, textarea, select {
+  color: var(--color-text);
+  background-color: var(--color-surface-elevated);
+  border-color: var(--color-border);
+}
+input::placeholder, textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* === Labels: dark mode === */
+label {
+  color: var(--color-text-secondary);
+}
+
+/* === Headings in components: dark mode === */
+.text-gray-900 { color: var(--color-text) !important; }
+.text-gray-700 { color: var(--color-text-secondary) !important; }
+.text-gray-500 { color: var(--color-text-muted) !important; }
+.text-gray-400 { color: var(--color-text-muted) !important; }
+.bg-gray-50 { background-color: var(--color-surface-elevated) !important; }
+.bg-gray-100 { background-color: var(--color-surface-secondary) !important; }
+.border-gray-200 { border-color: var(--color-border) !important; }
+.bg-white { background-color: var(--color-surface-elevated) !important; }
+
 /* === Scrollbar === */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
