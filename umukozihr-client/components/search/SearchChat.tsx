@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Send, Loader2, User, ExternalLink } from "lucide-react";
+import Markdown from "react-markdown";
 import { cn } from "@/lib/utils";
 import { api } from "@/lib/api";
 import type { CandidateResult } from "@/lib/types";
@@ -147,11 +148,9 @@ export function SearchChat({
                 : { background: "var(--color-surface-secondary)", color: "var(--color-text)", border: "1px solid var(--color-border)" }
               }
             >
-              <span dangerouslySetInnerHTML={{ __html: msg.content
-                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-                .replace(/\n- /g, '<br/>• ')
-                .replace(/\n/g, '<br/>')
-              }} />
+              <div className="prose prose-sm dark:prose-invert max-w-none [&>p]:m-0 [&>ul]:m-0 [&>ul]:pl-4 [&>ol]:m-0 [&>ol]:pl-4 [&_strong]:font-semibold">
+                <Markdown>{msg.content}</Markdown>
+              </div>
             </div>
           </div>
         ))}
