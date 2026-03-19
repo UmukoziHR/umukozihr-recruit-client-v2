@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import Image from "next/image";
 import { Send, Loader2, User, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { api } from "@/lib/api";
@@ -134,7 +133,7 @@ export function SearchChat({
                 <User className="h-4 w-4" />
               </div>
             ) : (
-              <Image src={AMBERLYN_AVATAR} alt="Amberlyn" width={32} height={32} className="flex-shrink-0 h-8 w-8 rounded-full object-cover" />
+              <img src={AMBERLYN_AVATAR} alt="Amberlyn" className="flex-shrink-0 h-8 w-8 rounded-full object-cover" />
             )}
             <div
               className={cn(
@@ -152,7 +151,7 @@ export function SearchChat({
         {/* Typing / progress indicator */}
         {isSearching && (
           <div className="flex gap-3">
-            <Image src={AMBERLYN_AVATAR} alt="Amberlyn" width={32} height={32} className="shrink-0 h-8 w-8 rounded-full object-cover" />
+            <img src={AMBERLYN_AVATAR} alt="Amberlyn" className="shrink-0 h-8 w-8 rounded-full object-cover" />
             <div className="rounded-2xl rounded-bl-md bg-gray-100 px-4 py-3 text-sm text-gray-600">
               <div className="flex items-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin text-[hsl(20,100%,55%)]" />

@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
-import Image from "next/image";
+
 import { api } from "@/lib/api";
 
 interface ChatMsg {
@@ -72,7 +72,7 @@ export default function ResultsChat({ searchId }: { searchId: string }) {
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
             {m.role === "assistant" && (
-              <Image src="/amberlyn.png" alt="Amberlyn" width={32} height={32} className="shrink-0 w-8 h-8 rounded-full object-cover mr-2 mt-1" />
+              <img src="/amberlyn.png" alt="Amberlyn" className="shrink-0 w-8 h-8 rounded-full object-cover mr-2 mt-1" />
             )}
             <div
               className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${m.role === "user" ? "rounded-br-md" : "rounded-bl-md"}`}
@@ -88,7 +88,7 @@ export default function ResultsChat({ searchId }: { searchId: string }) {
         ))}
         {loading && (
           <div className="flex justify-start">
-            <Image src="/amberlyn.png" alt="Amberlyn" width={32} height={32} className="shrink-0 w-8 h-8 rounded-full object-cover mr-2" />
+            <img src="/amberlyn.png" alt="Amberlyn" className="shrink-0 w-8 h-8 rounded-full object-cover mr-2" />
             <div className="rounded-2xl rounded-bl-md px-4 py-3" style={{ background: "var(--color-surface-elevated)", border: "1px solid var(--color-border)" }}>
               <div className="flex gap-1">
                 <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: "var(--color-brand-orange)", animationDelay: "0ms" }} />

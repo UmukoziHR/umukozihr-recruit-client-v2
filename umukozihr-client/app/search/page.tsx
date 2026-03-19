@@ -56,9 +56,9 @@ export default function SearchPage() {
   return (
     <AppShell>
       <div className="flex flex-col" style={{ height: "calc(100vh - 60px)" }}>
-        {/* ── Header ── */}
+        {/* ── Header (compact single line) ── */}
         <header
-          className="shrink-0 px-6 py-4"
+          className="shrink-0 px-6 py-2"
           style={{
             borderBottom: "1px solid var(--color-border)",
             background: "var(--color-surface)",
@@ -66,19 +66,17 @@ export default function SearchPage() {
         >
           <div className="max-w-6xl mx-auto flex items-center justify-between">
             {/* Left: Title */}
-            <div>
-              <h1
-                className="text-2xl font-bold tracking-tight"
-                style={{ color: "var(--color-text)" }}
-              >
-                Candidate Search
-              </h1>
-              <p
-                className="text-sm mt-0.5"
-                style={{ color: "var(--color-text-muted)" }}
-              >
-                Find the perfect candidates with AI-powered search
-              </p>
+            <div className="flex items-center gap-4">
+              <h1 className="text-lg font-bold tracking-tight" style={{ color: "var(--color-text)" }}>Search</h1>
+              {/* Mode toggle inline */}
+              <div className="inline-flex rounded-full p-0.5" style={{ background: "var(--color-surface-secondary)" }}>
+                <button onClick={() => setMode("chat")} className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all" style={{ background: mode === "chat" ? "var(--color-surface-elevated)" : "transparent", color: mode === "chat" ? "var(--color-text)" : "var(--color-text-muted)", boxShadow: mode === "chat" ? "var(--shadow-sm)" : "none" }}>
+                  <MessageSquare className="h-3.5 w-3.5" /> Chat
+                </button>
+                <button onClick={() => setMode("manual")} className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all" style={{ background: mode === "manual" ? "var(--color-surface-elevated)" : "transparent", color: mode === "manual" ? "var(--color-text)" : "var(--color-text-muted)", boxShadow: mode === "manual" ? "var(--shadow-sm)" : "none" }}>
+                  <SlidersHorizontal className="h-3.5 w-3.5" /> Manual
+                </button>
+              </div>
             </div>
 
             {/* Right: Credits + Deep Research */}
@@ -176,74 +174,14 @@ export default function SearchPage() {
           </div>
         )}
 
-        {/* ── Mode Toggle Bar ── */}
-        <div
-          className="shrink-0 px-6 py-3"
-          style={{
-            borderBottom: "1px solid var(--color-border)",
-            background: "var(--color-surface)",
-          }}
-        >
-          <div className="max-w-6xl mx-auto flex items-center justify-between">
-            <div
-              className="inline-flex rounded-full p-1"
-              style={{ background: "var(--color-surface-secondary)" }}
-            >
-              <button
-                onClick={() => setMode("chat")}
-                className="flex items-center gap-2 rounded-full px-5 py-2 text-sm font-medium transition-all"
-                style={{
-                  background:
-                    mode === "chat"
-                      ? "var(--color-surface-elevated)"
-                      : "transparent",
-                  color:
-                    mode === "chat"
-                      ? "var(--color-text)"
-                      : "var(--color-text-muted)",
-                  boxShadow: mode === "chat" ? "var(--shadow-sm)" : "none",
-                }}
-              >
-                <MessageSquare className="h-4 w-4" />
-                Chat
-              </button>
-              <button
-                onClick={() => setMode("manual")}
-                className="flex items-center gap-2 rounded-full px-5 py-2 text-sm font-medium transition-all"
-                style={{
-                  background:
-                    mode === "manual"
-                      ? "var(--color-surface-elevated)"
-                      : "transparent",
-                  color:
-                    mode === "manual"
-                      ? "var(--color-text)"
-                      : "var(--color-text-muted)",
-                  boxShadow: mode === "manual" ? "var(--shadow-sm)" : "none",
-                }}
-              >
-                <SlidersHorizontal className="h-4 w-4" />
-                Manual
-              </button>
-            </div>
-
-            {/* Search complete: link to results */}
-            {searchComplete && searchId && (
-              <Link
-                href={`/results/${searchId}`}
-                className="flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold transition-all"
-                style={{
-                  background: "var(--color-brand-teal)",
-                  color: "#fff",
-                }}
-              >
-                <CheckCircle2 className="h-4 w-4" />
-                View {candidates.length} Results
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            )}
+        {/* Search complete: results link bar */}
+        {searchComplete && searchId && (
+          <div className="shrink-0 px-6 py-2 flex justify-center" style={{ borderBottom: "1px solid var(--color-border)", background: "color-mix(in srgb, var(--color-brand-teal) 8%, var(--color-surface))" }}>
+            <Link href={`/results?id=${searchId}`} className="flex items-center gap-2 rounded-full px-5 py-1.5 text-sm font-semibold transition-all" style={{ background: "var(--color-brand-teal)", color: "#fff" }}>
+              <CheckCircle2 className="h-4 w-4" /> View {candidates.length} Results <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
-        </div>
+        )}
 
         {/* ── Workflow Progress (persistent once search starts) ── */}
         {(isSearching || step === "complete" || step === "error") && (
@@ -359,8 +297,8 @@ export default function SearchPage() {
 
         {/* ── Main Content Area ── */}
         <main className="flex-1 min-h-0 overflow-hidden">
-          <div className="h-full max-w-6xl mx-auto">
-            {mode === "chat" ? (
+          {mode === "chat" ? (
+            <div className="h-full w-full max-w-4xl mx-auto">
               <SearchChat
                 onSearch={(prompt, history) => startSearch(prompt, deepResearch, history)}
                 isSearching={isSearching}
@@ -369,16 +307,16 @@ export default function SearchPage() {
                 message={message}
                 searchId={searchId}
               />
-            ) : (
-              <div className="h-full overflow-y-auto px-6 py-6">
-                <ManualForm
-                  onSearch={(data: any) => startSearch(data, deepResearch)}
-                  isSearching={isSearching}
-                  deepResearch={deepResearch}
-                />
-              </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <div className="h-full max-w-6xl mx-auto overflow-y-auto px-6 py-6">
+              <ManualForm
+                onSearch={(data: any) => startSearch(data, deepResearch)}
+                isSearching={isSearching}
+                deepResearch={deepResearch}
+              />
+            </div>
+          )}
         </main>
       </div>
     </AppShell>
