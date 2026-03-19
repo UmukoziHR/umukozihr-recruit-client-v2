@@ -46,10 +46,8 @@ export default function SearchPage() {
   }, [searchComplete, searchId]);
 
   return (
-    <AppShell>
-      <div className="flex flex-col" style={{ height: "calc(100vh - 60px)" }}>
-        {/* ── Two-column: 75% chat | 25% sidebar (no header - navbar is enough) ── */}
-        <div className="flex-1 min-h-0 flex">
+    <AppShell flush>
+      <div className="flex h-full">
           {/* LEFT: Chat (75%) */}
           <main className="min-h-0 overflow-hidden" style={{ flex: "3" }}>
             {mode === "chat" ? (
@@ -170,7 +168,6 @@ export default function SearchPage() {
               </div>
             )}
           </aside>
-        </div>
       </div>
     </AppShell>
   );
