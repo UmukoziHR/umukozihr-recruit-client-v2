@@ -23,7 +23,7 @@ export interface CreditTransaction { id: string; action: string; amount: number;
 export interface CreditHistory { transactions: CreditTransaction[]; total: number }
 
 // === Search ===
-export interface SearchPromptRequest { prompt: string; use_deep_research?: boolean; history?: Array<{role: string; content: string}> }
+export interface SearchPromptRequest { prompt: string; use_deep_research?: boolean; session_id?: string; history?: Array<{role: string; content: string}> }
 export interface SearchManualRequest {
   job_titles: string[]; skills?: string[]; locations: string[];
   experience_years_min?: number; experience_years_max?: number;

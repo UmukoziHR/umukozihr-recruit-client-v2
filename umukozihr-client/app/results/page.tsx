@@ -279,7 +279,7 @@ function ResultsPage() {
           style={{ background: "var(--color-brand-teal)" }}
         >
           <MessageCircle className="h-5 w-5" />
-          Chat with AI
+          Chat with Amberlyn
         </button>
       )}
 
@@ -289,7 +289,7 @@ function ResultsPage() {
           <div className="flex items-center justify-between px-4 py-3 shrink-0" style={{ background: "var(--color-brand-teal)", color: "#fff" }}>
             <div className="flex items-center gap-2">
               <MessageCircle className="h-5 w-5" />
-              <span className="font-semibold text-sm">Discuss Results</span>
+              <span className="font-semibold text-sm">Chat with Amberlyn</span>
             </div>
             <button onClick={() => setChatOpen(false)} className="p-1 rounded-lg hover:bg-white/20 transition-colors">
               <X className="h-5 w-5" />

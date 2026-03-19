@@ -253,8 +253,14 @@ export function useSSESearch(): UseSSESearchReturn {
       setState((s) => ({ ...s, isSearching: true, error: null, step: "analyzing", progress: 0.1, message: "Understanding your request..." }));
       try {
         let res: any;
+        // Generate session_id for thread isolation (persist in localStorage)
+        let sessionId = typeof window !== "undefined" ? localStorage.getItem("chat_session_id") : null;
+        if (!sessionId) {
+          sessionId = `s-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+          if (typeof window !== "undefined") localStorage.setItem("chat_session_id", sessionId);
+        }
         if (typeof input === "string") {
-          res = await api.searchByPrompt({ prompt: input, use_deep_research: deepResearch, history: history || [] });
+          res = await api.searchByPrompt({ prompt: input, use_deep_research: deepResearch, session_id: sessionId, history: history || [] });
         } else {
           res = await api.searchManual({ ...input, use_deep_research: deepResearch });
         }
@@ -324,6 +330,8 @@ export function useSSESearch(): UseSSESearchReturn {
   const reset = useCallback(() => {
     stopStream();
     setState(initialState);
+    // Clear session so next search gets a fresh thread
+    if (typeof window !== "undefined") localStorage.removeItem("chat_session_id");
   }, [stopStream]);
 
   return { ...state, startStream, startSearch, stopStream, reset };

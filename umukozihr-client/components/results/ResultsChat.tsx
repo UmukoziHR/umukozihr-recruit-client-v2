@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 import { api } from "@/lib/api";
 
 interface ChatMsg {
@@ -29,7 +30,7 @@ export default function ResultsChat({ searchId }: { searchId: string }) {
         if (!hasResultsChat) {
           hist.push({
             role: "assistant",
-            content: "Your search results are ready! Ask me anything about the candidates - why someone was ranked higher, their strengths, how they compare, or whether they'd be a good fit for your role.",
+            content: "Hi, it's Amberlyn! Your search results are ready. Ask me anything about the candidates - why someone was ranked higher, their strengths, how they compare, or whether they'd be a good fit for your role.",
           });
         }
         setMessages(hist);
@@ -37,7 +38,7 @@ export default function ResultsChat({ searchId }: { searchId: string }) {
       } catch {
         setMessages([{
           role: "assistant",
-          content: "I'm ready to discuss these search results with you. Ask me anything about the candidates!",
+          content: "Hi, I'm Amberlyn! I'm ready to discuss these search results with you. Ask me anything about the candidates!",
         }]);
         setHistoryLoaded(true);
       }
@@ -71,7 +72,7 @@ export default function ResultsChat({ searchId }: { searchId: string }) {
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
             {m.role === "assistant" && (
-              <div className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-2 mt-1" style={{ background: "var(--color-brand-teal)", color: "#fff", fontSize: "12px", fontWeight: 600 }}>AI</div>
+              <Image src="/amberlyn.png" alt="Amberlyn" width={32} height={32} className="shrink-0 w-8 h-8 rounded-full object-cover mr-2 mt-1" />
             )}
             <div
               className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${m.role === "user" ? "rounded-br-md" : "rounded-bl-md"}`}
@@ -87,7 +88,7 @@ export default function ResultsChat({ searchId }: { searchId: string }) {
         ))}
         {loading && (
           <div className="flex justify-start">
-            <div className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-2" style={{ background: "var(--color-brand-teal)", color: "#fff", fontSize: "12px", fontWeight: 600 }}>AI</div>
+            <Image src="/amberlyn.png" alt="Amberlyn" width={32} height={32} className="shrink-0 w-8 h-8 rounded-full object-cover mr-2" />
             <div className="rounded-2xl rounded-bl-md px-4 py-3" style={{ background: "var(--color-surface-elevated)", border: "1px solid var(--color-border)" }}>
               <div className="flex gap-1">
                 <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: "var(--color-brand-orange)", animationDelay: "0ms" }} />

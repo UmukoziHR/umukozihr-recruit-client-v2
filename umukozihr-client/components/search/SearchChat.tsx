@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Send, Loader2, User, Bot, ExternalLink } from "lucide-react";
+import Image from "next/image";
+import { Send, Loader2, User, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { api } from "@/lib/api";
 import type { CandidateResult } from "@/lib/types";
@@ -22,11 +23,13 @@ interface SearchChatProps {
   searchId?: string | null;
 }
 
+const AMBERLYN_AVATAR = "/amberlyn.png";
+
 const WELCOME_MSG: ChatMessage = {
   id: "welcome",
   role: "assistant",
   content:
-    "Hello! I can help you find candidates. Describe the role you're looking to fill -- for example: \"Senior React developer with 5+ years experience in Nairobi\" or \"Marketing manager with B2B SaaS experience.\"",
+    "Hi, I'm Amberlyn, your recruiting assistant! Describe the role you're looking to fill -- for example: \"Senior React developer with 5+ years experience in Nairobi\" or \"Marketing manager with B2B SaaS experience.\"",
   timestamp: new Date(),
 };
 
@@ -126,20 +129,13 @@ export function SearchChat({
               msg.role === "user" ? "ml-auto flex-row-reverse" : ""
             )}
           >
-            <div
-              className={cn(
-                "flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center",
-                msg.role === "user"
-                  ? "bg-[hsl(20,100%,55%)] text-white"
-                  : "bg-[hsl(180,50%,23%)] text-white"
-              )}
-            >
-              {msg.role === "user" ? (
+            {msg.role === "user" ? (
+              <div className="flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center bg-[hsl(20,100%,55%)] text-white">
                 <User className="h-4 w-4" />
-              ) : (
-                <Bot className="h-4 w-4" />
-              )}
-            </div>
+              </div>
+            ) : (
+              <Image src={AMBERLYN_AVATAR} alt="Amberlyn" width={32} height={32} className="flex-shrink-0 h-8 w-8 rounded-full object-cover" />
+            )}
             <div
               className={cn(
                 "rounded-2xl px-4 py-3 text-sm leading-relaxed",
@@ -156,9 +152,7 @@ export function SearchChat({
         {/* Typing / progress indicator */}
         {isSearching && (
           <div className="flex gap-3">
-            <div className="flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center bg-[hsl(180,50%,23%)] text-white">
-              <Bot className="h-4 w-4" />
-            </div>
+            <Image src={AMBERLYN_AVATAR} alt="Amberlyn" width={32} height={32} className="shrink-0 h-8 w-8 rounded-full object-cover" />
             <div className="rounded-2xl rounded-bl-md bg-gray-100 px-4 py-3 text-sm text-gray-600">
               <div className="flex items-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin text-[hsl(20,100%,55%)]" />
