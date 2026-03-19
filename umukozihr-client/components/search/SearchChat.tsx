@@ -145,20 +145,45 @@ export function SearchChat({
                 : { background: "var(--color-surface-secondary)", color: "var(--color-text)", border: "1px solid var(--color-border)" }
               }
             >
-              {msg.content}
+              <span dangerouslySetInnerHTML={{ __html: msg.content
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n- /g, '<br/>• ')
+                .replace(/\n/g, '<br/>')
+              }} />
             </div>
           </div>
         ))}
 
-        {/* Typing / progress indicator */}
+        {/* Inline progress indicator in chat */}
         {isSearching && (
           <div className="flex gap-3">
             <img src={AMBERLYN_AVATAR} alt="Amberlyn" className="shrink-0 h-8 w-8 rounded-full object-cover" />
-            <div className="rounded-2xl rounded-bl-md px-4 py-3 text-sm" style={{ background: "var(--color-surface-secondary)", color: "var(--color-text-secondary)", border: "1px solid var(--color-border)" }}>
-              <div className="flex items-center gap-2">
+            <div className="rounded-2xl rounded-bl-md px-4 py-3 text-sm w-full max-w-[340px]" style={{ background: "var(--color-surface-secondary)", color: "var(--color-text)", border: "1px solid var(--color-border)" }}>
+              <div className="flex items-center gap-2 mb-2.5">
                 <Loader2 className="h-4 w-4 animate-spin text-[hsl(20,100%,55%)]" />
-                <span>{message || "Searching..."}</span>
+                <span className="font-medium">{message || "Searching..."}</span>
               </div>
+              {/* Compact inline progress steps */}
+              {(() => {
+                const steps = ["Analyzing", "Searching", "Enriching", "Scoring", "Willingness", "Complete"];
+                const stepIdx = steps.findIndex(s => step?.toLowerCase().startsWith(s.toLowerCase()));
+                const activeIdx = stepIdx >= 0 ? stepIdx : 0;
+                return (
+                  <div className="space-y-1.5">
+                    <div className="flex gap-1">
+                      {steps.map((s, i) => (
+                        <div key={s} className="flex-1 h-1.5 rounded-full transition-all" style={{
+                          background: i < activeIdx ? "hsl(160, 60%, 45%)" : i === activeIdx ? "hsl(20, 100%, 55%)" : "var(--color-border)"
+                        }} />
+                      ))}
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-[10px]" style={{ color: "var(--color-text-muted)" }}>{steps[activeIdx]}</span>
+                      <span className="text-[10px]" style={{ color: "var(--color-text-muted)" }}>{Math.round(progress || 0)}%</span>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         )}
