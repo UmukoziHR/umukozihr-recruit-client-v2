@@ -367,6 +367,7 @@ export default function SearchPage() {
                 candidates={candidates}
                 step={step}
                 message={message}
+                searchId={searchId}
               />
             ) : (
               <div className="h-full overflow-y-auto px-6 py-6">

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Send, Loader2, User, Bot, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { api } from "@/lib/api";
 import type { CandidateResult } from "@/lib/types";
 
 interface ChatMessage {
@@ -18,7 +19,16 @@ interface SearchChatProps {
   candidates: CandidateResult[];
   step: string;
   message: string;
+  searchId?: string | null;
 }
+
+const WELCOME_MSG: ChatMessage = {
+  id: "welcome",
+  role: "assistant",
+  content:
+    "Hello! I can help you find candidates. Describe the role you're looking to fill -- for example: \"Senior React developer with 5+ years experience in Nairobi\" or \"Marketing manager with B2B SaaS experience.\"",
+  timestamp: new Date(),
+};
 
 export function SearchChat({
   onSearch,
@@ -26,19 +36,39 @@ export function SearchChat({
   candidates,
   step,
   message,
+  searchId,
 }: SearchChatProps) {
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: "welcome",
-      role: "assistant",
-      content:
-        "Hello! I can help you find candidates. Describe the role you're looking to fill -- for example: \"Senior React developer with 5+ years experience in Nairobi\" or \"Marketing manager with B2B SaaS experience.\"",
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>([WELCOME_MSG]);
+  const [historyLoaded, setHistoryLoaded] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Load conversation history from backend on mount/resume
+  useEffect(() => {
+    if (historyLoaded) return;
+    const sid = searchId || (typeof window !== "undefined" ? localStorage.getItem("last_search_id") : null);
+    if (!sid) { setHistoryLoaded(true); return; }
+    (async () => {
+      try {
+        const data = await api.getConversation(sid);
+        const hist = (data.messages || []);
+        if (hist.length > 0) {
+          const restored: ChatMessage[] = [WELCOME_MSG];
+          hist.forEach((m, i) => {
+            restored.push({
+              id: `history-${i}`,
+              role: m.role as "user" | "assistant",
+              content: m.content,
+              timestamp: new Date(),
+            });
+          });
+          setMessages(restored);
+        }
+      } catch { /* no history yet, keep welcome */ }
+      setHistoryLoaded(true);
+    })();
+  }, [searchId, historyLoaded]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
