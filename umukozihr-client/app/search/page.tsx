@@ -52,6 +52,7 @@ export default function SearchPage() {
                 candidates={candidates}
                 step={step}
                 message={message}
+                progress={progress}
                 searchId={searchId}
               />
             ) : (

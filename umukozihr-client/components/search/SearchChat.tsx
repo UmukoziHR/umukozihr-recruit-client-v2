@@ -19,6 +19,7 @@ interface SearchChatProps {
   candidates: CandidateResult[];
   step: string;
   message: string;
+  progress: number;
   searchId?: string | null;
 }
 
@@ -38,6 +39,7 @@ export function SearchChat({
   candidates,
   step,
   message,
+  progress,
   searchId,
 }: SearchChatProps) {
   const [input, setInput] = useState("");
