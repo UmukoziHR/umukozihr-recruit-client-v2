@@ -181,7 +181,7 @@ export function SearchChat({
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[10px]" style={{ color: "var(--color-text-muted)" }}>{steps[activeIdx]}</span>
-                      <span className="text-[10px]" style={{ color: "var(--color-text-muted)" }}>{Math.round(progress || 0)}%</span>
+                      <span className="text-[10px]" style={{ color: "var(--color-text-muted)" }}>{Math.round((progress || 0) * 100)}%</span>
                     </div>
                   </div>
                 );
