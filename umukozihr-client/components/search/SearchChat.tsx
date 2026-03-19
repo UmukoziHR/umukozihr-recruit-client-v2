@@ -117,9 +117,9 @@ export function SearchChat({
   };
 
   return (
-    <div className="flex flex-col h-full rounded-xl border border-gray-200 bg-white">
+    <div className="flex flex-col h-full" style={{ background: "var(--color-surface-elevated)", borderRight: "1px solid var(--color-border)" }}>
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+      <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4">
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -138,10 +138,12 @@ export function SearchChat({
             <div
               className={cn(
                 "rounded-2xl px-4 py-3 text-sm leading-relaxed",
-                msg.role === "user"
-                  ? "bg-[hsl(20,100%,55%)] text-white rounded-br-md"
-                  : "bg-gray-100 text-gray-800 rounded-bl-md"
+                msg.role === "user" ? "rounded-br-md" : "rounded-bl-md"
               )}
+              style={msg.role === "user"
+                ? { background: "var(--color-brand-orange)", color: "#fff" }
+                : { background: "var(--color-surface-secondary)", color: "var(--color-text)", border: "1px solid var(--color-border)" }
+              }
             >
               {msg.content}
             </div>
@@ -152,7 +154,7 @@ export function SearchChat({
         {isSearching && (
           <div className="flex gap-3">
             <img src={AMBERLYN_AVATAR} alt="Amberlyn" className="shrink-0 h-8 w-8 rounded-full object-cover" />
-            <div className="rounded-2xl rounded-bl-md bg-gray-100 px-4 py-3 text-sm text-gray-600">
+            <div className="rounded-2xl rounded-bl-md px-4 py-3 text-sm" style={{ background: "var(--color-surface-secondary)", color: "var(--color-text-secondary)", border: "1px solid var(--color-border)" }}>
               <div className="flex items-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin text-[hsl(20,100%,55%)]" />
                 <span>{message || "Searching..."}</span>
@@ -205,7 +207,7 @@ export function SearchChat({
       </div>
 
       {/* Input area */}
-      <div className="flex-shrink-0 border-t border-gray-200 p-4">
+      <div className="shrink-0 p-4" style={{ borderTop: "1px solid var(--color-border)" }}>
         <div className="flex items-end gap-3">
           <textarea
             ref={inputRef}
@@ -216,22 +218,18 @@ export function SearchChat({
             disabled={isSearching}
             rows={1}
             className={cn(
-              "flex-1 resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm",
-              "placeholder:text-gray-400 focus:border-[hsl(20,100%,55%)] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[hsl(20,100%,55%)]/20",
+              "flex-1 resize-none rounded-xl px-4 py-3 text-sm",
+              "focus:outline-none focus:ring-2 focus:ring-[hsl(20,100%,55%)]/20",
               "disabled:opacity-50 disabled:cursor-not-allowed",
               "min-h-[44px] max-h-[120px]"
             )}
-            style={{ fieldSizing: "content" } as React.CSSProperties}
+            style={{ fieldSizing: "content", background: "var(--color-surface-secondary)", border: "1px solid var(--color-border)", color: "var(--color-text)" } as React.CSSProperties}
           />
           <button
             onClick={handleSubmit}
             disabled={!input.trim() || isSearching}
-            className={cn(
-              "flex-shrink-0 rounded-xl p-3 transition-all",
-              input.trim() && !isSearching
-                ? "bg-[hsl(20,100%,55%)] text-white hover:bg-[hsl(20,100%,48%)] shadow-sm"
-                : "bg-gray-100 text-gray-400 cursor-not-allowed"
-            )}
+            className="shrink-0 rounded-xl p-3 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{ background: input.trim() && !isSearching ? "var(--color-brand-orange)" : "var(--color-surface-secondary)", color: input.trim() && !isSearching ? "#fff" : "var(--color-text-muted)" }}
           >
             {isSearching ? (
               <Loader2 className="h-5 w-5 animate-spin" />
