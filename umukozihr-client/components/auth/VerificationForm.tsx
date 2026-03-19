@@ -43,19 +43,8 @@ export function VerificationForm({ email, onBack }: VerificationFormProps) {
       setIsVerifying(true);
       try {
         await api.verifyOtp({ email, code });
-        toast.success("Email verified successfully!");
-        // Small delay before login so the user sees the success
-        setTimeout(async () => {
-          try {
-            // The backend should have activated the account; redirect will
-            // happen via useAuth's login flow or the parent page.
-            window.location.href = "/search";
-          } catch {
-            // If auto-login fails, just let the user sign in manually
-            toast.info("Please sign in with your credentials.");
-            onBack();
-          }
-        }, 600);
+        toast.success("Email verified! Please sign in.");
+        setTimeout(() => onBack(), 800);
       } catch (error: any) {
         const message =
           error?.response?.data?.detail ||
