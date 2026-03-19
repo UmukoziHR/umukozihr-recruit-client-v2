@@ -274,7 +274,9 @@ export default function AuthPage() {
             className="mt-6 text-center text-xs"
             style={{ color: "var(--color-text-muted)" }}
           >
-            By continuing, you agree to our Terms of Service and Privacy Policy.
+            By continuing, you agree to our{" "}
+            <a href="/legal/terms" target="_blank" rel="noopener noreferrer" className="underline font-medium" style={{ color: "var(--color-brand-orange)" }}>Terms of Service</a>{" "}and{" "}
+            <a href="/legal/privacy" target="_blank" rel="noopener noreferrer" className="underline font-medium" style={{ color: "var(--color-brand-orange)" }}>Privacy Policy</a>.
           </p>
         </div>
       </div>

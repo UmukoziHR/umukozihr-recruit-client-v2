@@ -6,6 +6,7 @@ import { api } from "@/lib/api";
 import { AppShell } from "@/components/AppShell";
 import { CandidateCard } from "@/components/results/CandidateCard";
 import { CandidateListItem } from "@/components/results/CandidateListItem";
+import ResultsChat from "@/components/results/ResultsChat";
 import {
   LayoutGrid,
   List,
@@ -16,6 +17,8 @@ import {
   Users,
   Zap,
   Loader2,
+  MessageCircle,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SearchResponse, CandidateResult } from "@/lib/types";
@@ -35,6 +38,8 @@ function ResultsPage() {
   const [searchData, setSearchData] = useState<SearchResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [activeSearchId, setActiveSearchId] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -48,11 +53,13 @@ function ResultsPage() {
         if (sid) {
           const data = await api.getSearch(sid);
           setSearchData(data);
+          setActiveSearchId(sid);
         } else {
           const searches = await api.listSearches();
           if (searches.length > 0) {
             const latest = await api.getSearch(searches[0].id);
             setSearchData(latest);
+            setActiveSearchId(searches[0].id);
           }
         }
       } catch (err: unknown) {
@@ -261,6 +268,36 @@ function ResultsPage() {
           <p className="text-sm text-gray-500">
             No candidates match &quot;{filterText}&quot;
           </p>
+        </div>
+      )}
+
+      {/* Chat toggle FAB */}
+      {activeSearchId && !chatOpen && (
+        <button
+          onClick={() => setChatOpen(true)}
+          className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium text-white shadow-lg hover:shadow-xl transition-all"
+          style={{ background: "var(--color-brand-teal)" }}
+        >
+          <MessageCircle className="h-5 w-5" />
+          Chat with AI
+        </button>
+      )}
+
+      {/* Chat slide-over panel */}
+      {chatOpen && activeSearchId && (
+        <div className="fixed bottom-0 right-0 z-50 w-full sm:w-[420px] h-[70vh] sm:h-[600px] sm:bottom-4 sm:right-4 rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-2xl flex flex-col" style={{ border: "1px solid var(--color-border)", background: "var(--color-surface)" }}>
+          <div className="flex items-center justify-between px-4 py-3 shrink-0" style={{ background: "var(--color-brand-teal)", color: "#fff" }}>
+            <div className="flex items-center gap-2">
+              <MessageCircle className="h-5 w-5" />
+              <span className="font-semibold text-sm">Discuss Results</span>
+            </div>
+            <button onClick={() => setChatOpen(false)} className="p-1 rounded-lg hover:bg-white/20 transition-colors">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+          <div className="flex-1 min-h-0">
+            <ResultsChat searchId={activeSearchId} />
+          </div>
         </div>
       )}
     </div>

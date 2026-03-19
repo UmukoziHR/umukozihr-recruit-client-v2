@@ -23,6 +23,7 @@ import {
   Coins,
   ChevronDown,
   Sparkles,
+  Clock,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -31,6 +32,7 @@ import {
 const navLinks = [
   { href: "/search", label: "Search", icon: Search },
   { href: "/results", label: "Results", icon: FileText },
+  { href: "/history", label: "History", icon: Clock },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/settings", label: "Settings", icon: Settings },
 ];

@@ -251,6 +251,17 @@ class ApiClient {
     return Array.isArray(res) ? res : res.searches;
   }
 
+  async chatOnResults(searchId: string, message: string): Promise<{ message: string }> {
+    return this.request(`/search/${searchId}/chat`, {
+      method: "POST",
+      body: JSON.stringify({ message }),
+    });
+  }
+
+  async getConversation(searchId: string): Promise<{ messages: Array<{ role: string; content: string }> }> {
+    return this.request(`/search/${searchId}/conversation`);
+  }
+
   getStreamUrl(searchId: string): string {
     return `${BASE_URL}/search/${searchId}/stream`;
   }
