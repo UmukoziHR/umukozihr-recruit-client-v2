@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
 
+import Markdown from "react-markdown";
 import { api } from "@/lib/api";
 
 interface ChatMsg {
@@ -82,7 +83,11 @@ export default function ResultsChat({ searchId }: { searchId: string }) {
                 border: m.role === "assistant" ? "1px solid var(--color-border)" : "none",
               }}
             >
-              {m.content}
+              {m.role === "assistant" ? (
+                <div className="prose prose-sm dark:prose-invert max-w-none [&>p]:m-0 [&>ul]:m-0 [&>ul]:pl-4 [&>ol]:m-0 [&>ol]:pl-4 [&_strong]:font-semibold [&>hr]:my-2">
+                  <Markdown>{m.content}</Markdown>
+                </div>
+              ) : m.content}
             </div>
           </div>
         ))}

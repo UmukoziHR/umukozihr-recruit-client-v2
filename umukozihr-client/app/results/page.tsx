@@ -29,7 +29,7 @@ type SortField = "match_score" | "willingness_score" | "total_score";
 export default function ResultsPageWrapper() { return <AppShell><Suspense><ResultsPage /></Suspense></AppShell>; }
 function ResultsPage() {
   const searchParams = useSearchParams();
-  const searchId = searchParams.get("id");
+  const searchId = searchParams.get("id") || searchParams.get("search");
 
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [sortBy, setSortBy] = useState<SortField>("total_score");
@@ -81,8 +81,9 @@ function ResultsPage() {
       const q = filterText.toLowerCase();
       result = result.filter(
         (c) =>
-          (c.name ?? "").toLowerCase().includes(q) ||
-          (c.title ?? c.current_title ?? "").toLowerCase().includes(q) ||
+          (c.full_name ?? c.name ?? "").toLowerCase().includes(q) ||
+          (c.current_title ?? c.title ?? "").toLowerCase().includes(q) ||
+          (c.current_company ?? "").toLowerCase().includes(q) ||
           (c.location ?? "").toLowerCase().includes(q) ||
           (c.skills ?? []).some((s: string) => s.toLowerCase().includes(q))
       );
