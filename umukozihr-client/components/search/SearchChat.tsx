@@ -204,7 +204,7 @@ export function SearchChat({
                   >
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-gray-900 truncate">
-                        {c.name || "Unknown"}
+                        {c.full_name || c.name || "Unknown"}
                       </p>
                       <p className="text-xs text-gray-500 truncate">
                         {c.title || c.current_title || "No title"}
