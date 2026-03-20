@@ -92,7 +92,7 @@ function HistoryPage() {
                       )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex items-center gap-2 shrink-0 flex-wrap">
                     {s.status === "completed" && s.total_approved > 0 && (
                       <Link href={`/results?id=${s.id}`} className="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-xs font-medium transition-colors" style={{ background: "var(--color-surface-secondary)", color: "var(--color-text)", border: "1px solid var(--color-border)" }}>
                         View Results <ChevronRight className="h-3.5 w-3.5" />

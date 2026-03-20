@@ -42,9 +42,32 @@ export default function SearchPage() {
 
   return (
     <AppShell flush>
-      <div className="flex h-full">
-          {/* LEFT: Chat (75%) */}
-          <main className="min-h-0 overflow-hidden" style={{ flex: "3" }}>
+      <div className="flex flex-col lg:flex-row h-full">
+          {/* MOBILE: Top bar with key controls */}
+          <div className="flex lg:hidden items-center gap-2 px-3 py-2 shrink-0 overflow-x-auto" style={{ borderBottom: "1px solid var(--color-border)", background: "var(--color-surface)" }}>
+            <div className="inline-flex rounded-full p-0.5 shrink-0" style={{ background: "var(--color-surface-secondary)" }}>
+              <button onClick={() => setMode("chat")} className="flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium" style={{ background: mode === "chat" ? "var(--color-surface-elevated)" : "transparent", color: mode === "chat" ? "var(--color-text)" : "var(--color-text-muted)" }}>
+                <MessageSquare className="h-3 w-3" /> Chat
+              </button>
+              <button onClick={() => setMode("manual")} className="flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium" style={{ background: mode === "manual" ? "var(--color-surface-elevated)" : "transparent", color: mode === "manual" ? "var(--color-text)" : "var(--color-text-muted)" }}>
+                <SlidersHorizontal className="h-3 w-3" /> Manual
+              </button>
+            </div>
+            <div className="flex items-center gap-1 shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold" style={{ background: "color-mix(in srgb, var(--color-brand-orange) 10%, transparent)", color: "var(--color-brand-orange)" }}>
+              <Coins className="h-3 w-3" /> {balance ?? "--"}
+            </div>
+            <button onClick={() => setDeepResearch(!deepResearch)} className="flex items-center gap-1 shrink-0 rounded-full px-2.5 py-1 text-xs font-medium" style={{ background: deepResearch ? "var(--color-brand-orange)" : "var(--color-surface-secondary)", color: deepResearch ? "#fff" : "var(--color-text-muted)" }}>
+              <Sparkles className="h-3 w-3" /> Deep {deepResearch ? "ON" : "OFF"}
+            </button>
+            {searchComplete && searchId && (
+              <Link href={`/results?id=${searchId}`} className="flex items-center gap-1 shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold text-white" style={{ background: "var(--color-brand-teal)" }}>
+                View Results <ArrowRight className="h-3 w-3" />
+              </Link>
+            )}
+          </div>
+
+          {/* MAIN: Chat area */}
+          <main className="min-h-0 overflow-hidden flex-1">
             {mode === "chat" ? (
               <SearchChat
                 onSearch={(prompt, history) => startSearch(prompt, deepResearch, history)}
@@ -56,7 +79,7 @@ export default function SearchPage() {
                 searchId={searchId}
               />
             ) : (
-              <div className="h-full overflow-y-auto px-6 py-6 max-w-3xl">
+              <div className="h-full overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 max-w-3xl">
                 <ManualForm
                   onSearch={(data: any) => startSearch(data, deepResearch)}
                   isSearching={isSearching}
@@ -66,7 +89,7 @@ export default function SearchPage() {
             )}
           </main>
 
-          {/* RIGHT: Sidebar (25%) */}
+          {/* RIGHT: Desktop sidebar */}
           <aside className="shrink-0 hidden lg:flex flex-col gap-3 p-4 overflow-y-auto" style={{ width: "280px", borderLeft: "1px solid var(--color-border)", background: "var(--color-surface)" }}>
             {/* Mode toggle */}
             <div className="inline-flex rounded-full p-0.5 self-stretch" style={{ background: "var(--color-surface-secondary)" }}>

@@ -80,7 +80,7 @@ export default function AdminPage() {
 
         {tab === "overview" && stats && (
           <div className="space-y-6">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {[
                 { label: "Total Users", value: stats.total_users, icon: Users, accent: "var(--color-brand-teal)" },
                 { label: "Searches Today", value: stats.searches_today, icon: Search, accent: "var(--color-brand-orange)" },
@@ -111,8 +111,8 @@ export default function AdminPage() {
         {tab === "users" && (
           <div className="space-y-4">
             <input value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} placeholder="Search users..." className="w-full h-11 px-4 rounded-lg text-sm outline-none transition-all" style={{ background: "var(--color-surface-elevated)", border: "1px solid var(--color-border)", color: "var(--color-text)" }} />
-            <div className="rounded-xl overflow-hidden" style={{ background: "var(--color-surface-elevated)", border: "1px solid var(--color-border)", boxShadow: "var(--shadow-sm)" }}>
-              <table className="w-full text-sm">
+            <div className="rounded-xl overflow-hidden overflow-x-auto" style={{ background: "var(--color-surface-elevated)", border: "1px solid var(--color-border)", boxShadow: "var(--shadow-sm)" }}>
+              <table className="w-full text-sm min-w-[640px]">
                 <thead><tr style={{ borderBottom: "2px solid var(--color-border)" }}>
                   {["User", "Plan", "Credits", "Searches", "Status", "Actions"].map(h => <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>{h}</th>)}
                 </tr></thead>

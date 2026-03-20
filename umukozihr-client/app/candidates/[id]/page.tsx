@@ -240,7 +240,7 @@ export default function CandidateDetailPage() {
       </div>
 
       {/* Score breakdown */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-6">
         {scoreBreakdown.map((score) => {
           const Icon = score.icon;
           const pct = Math.round(score.value * 100);

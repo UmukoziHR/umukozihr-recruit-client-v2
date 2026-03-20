@@ -150,7 +150,7 @@ export default function PaymentPage() {
             PRICING
           </div>
           <h1
-            className="text-4xl font-bold mb-3"
+            className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3"
             style={{ color: "var(--color-text)" }}
           >
             Choose Your Plan
@@ -181,7 +181,7 @@ export default function PaymentPage() {
                     : "1px solid var(--color-border)",
                   borderRadius: "var(--radius-xl)",
                   boxShadow: isPopular ? "var(--shadow-lg)" : "var(--shadow-sm)",
-                  padding: isPopular ? "32px 28px" : "28px 24px",
+                  padding: isPopular ? "24px 16px" : "20px 16px",
                   transform: isPopular ? "scale(1.04)" : "none",
                   zIndex: isPopular ? 1 : 0,
                 }}

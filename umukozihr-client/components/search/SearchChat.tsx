@@ -159,7 +159,7 @@ export function SearchChat({
         {isSearching && (
           <div className="flex gap-3">
             <img src={AMBERLYN_AVATAR} alt="Amberlyn" className="shrink-0 h-8 w-8 rounded-full object-cover" />
-            <div className="rounded-2xl rounded-bl-md px-4 py-3 text-sm w-full max-w-[340px]" style={{ background: "var(--color-surface-secondary)", color: "var(--color-text)", border: "1px solid var(--color-border)" }}>
+            <div className="rounded-2xl rounded-bl-md px-4 py-3 text-sm w-full max-w-[280px] sm:max-w-[340px]" style={{ background: "var(--color-surface-secondary)", color: "var(--color-text)", border: "1px solid var(--color-border)" }}>
               <div className="flex items-center gap-2 mb-2.5">
                 <Loader2 className="h-4 w-4 animate-spin text-[hsl(20,100%,55%)]" />
                 <span className="font-medium">{message || "Searching..."}</span>
@@ -191,7 +191,7 @@ export function SearchChat({
 
         {/* Results preview */}
         {!isSearching && candidates.length > 0 && (
-          <div className="mx-auto max-w-md">
+          <div className="mx-auto max-w-sm sm:max-w-md">
             <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-4">
               <p className="text-sm font-medium text-gray-700 mb-3">
                 Top candidates found:
