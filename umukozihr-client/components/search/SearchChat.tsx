@@ -56,7 +56,8 @@ export function SearchChat({
     if (!sid) { setHistoryLoaded(true); return; }
     (async () => {
       try {
-        const data = await api.getConversation(sid);
+        const chatSessionId = typeof window !== "undefined" ? localStorage.getItem("chat_session_id") : null;
+        const data = await api.getConversation(sid, chatSessionId);
         const hist = (data.messages || []);
         if (hist.length > 0) {
           const restored: ChatMessage[] = [WELCOME_MSG];

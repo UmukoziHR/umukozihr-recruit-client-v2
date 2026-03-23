@@ -23,7 +23,7 @@ export default function ResultsChat({ searchId }: { searchId: string }) {
     if (!searchId || historyLoaded) return;
     (async () => {
       try {
-        const data = await api.getConversation(searchId);
+        const data = await api.getConversation(searchId, sessionId);
         const hist = (data.messages || []).map((m) => ({
           role: m.role as "user" | "assistant",
           content: m.content,

@@ -258,8 +258,9 @@ class ApiClient {
     });
   }
 
-  async getConversation(searchId: string): Promise<{ messages: Array<{ role: string; content: string }> }> {
-    return this.request(`/search/${searchId}/conversation`);
+  async getConversation(searchId: string, sessionId?: string | null): Promise<{ messages: Array<{ role: string; content: string }> }> {
+    const params = sessionId ? `?session_id=${sessionId}` : "";
+    return this.request(`/search/${searchId}/conversation${params}`);
   }
 
   getStreamUrl(searchId: string): string {
