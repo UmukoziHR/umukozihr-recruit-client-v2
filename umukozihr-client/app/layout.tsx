@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "UmukoziHR Recruit",
   description: "AI-powered recruiting automation",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon.png",
     apple: "/apple-touch-icon.png",
   },
 };
