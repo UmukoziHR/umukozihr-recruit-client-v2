@@ -98,7 +98,7 @@ export function SearchChat({
 
   const handleSubmit = () => {
     const trimmed = input.trim();
-    if (!trimmed || isSearching) return;
+    if (!trimmed || isSearching || step === "thinking") return;
 
     const userMsg: ChatMessage = {
       id: `user-${Date.now()}`,
@@ -155,7 +155,21 @@ export function SearchChat({
           </div>
         ))}
 
-        {/* Inline progress indicator in chat */}
+        {/* Typing indicator while Amberlyn thinks */}
+        {step === "thinking" && (
+          <div className="flex gap-3">
+            <img src={AMBERLYN_AVATAR} alt="Amberlyn" className="shrink-0 h-8 w-8 rounded-full object-cover" />
+            <div className="rounded-2xl rounded-bl-md px-4 py-3" style={{ background: "var(--color-surface-secondary)", border: "1px solid var(--color-border)" }}>
+              <div className="flex gap-1">
+                <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: "var(--color-text-muted)", animationDelay: "0ms" }} />
+                <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: "var(--color-text-muted)", animationDelay: "150ms" }} />
+                <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: "var(--color-text-muted)", animationDelay: "300ms" }} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Search progress indicator (only when actual search is running) */}
         {isSearching && (
           <div className="flex gap-3">
             <img src={AMBERLYN_AVATAR} alt="Amberlyn" className="shrink-0 h-8 w-8 rounded-full object-cover" />
@@ -241,7 +255,7 @@ export function SearchChat({
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Describe the candidate you're looking for..."
-            disabled={isSearching}
+            disabled={isSearching || step === "thinking"}
             rows={1}
             className={cn(
               "flex-1 resize-none rounded-xl px-4 py-3 text-sm",
@@ -253,9 +267,9 @@ export function SearchChat({
           />
           <button
             onClick={handleSubmit}
-            disabled={!input.trim() || isSearching}
+            disabled={!input.trim() || isSearching || step === "thinking"}
             className="shrink-0 rounded-xl p-3 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{ background: input.trim() && !isSearching ? "var(--color-brand-orange)" : "var(--color-surface-secondary)", color: input.trim() && !isSearching ? "#fff" : "var(--color-text-muted)" }}
+            style={{ background: input.trim() && !isSearching && step !== "thinking" ? "var(--color-brand-orange)" : "var(--color-surface-secondary)", color: input.trim() && !isSearching && step !== "thinking" ? "#fff" : "var(--color-text-muted)" }}
           >
             {isSearching ? (
               <Loader2 className="h-5 w-5 animate-spin" />

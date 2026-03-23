@@ -250,7 +250,7 @@ export function useSSESearch(): UseSSESearchReturn {
   // Chat-first search: send prompt -> get instant response (clarification or search started) -> poll for results
   const startSearch = useCallback(
     async (input: string | SearchManualRequest, deepResearch = false, history?: Array<{role: string; content: string}>) => {
-      setState((s) => ({ ...s, isSearching: true, error: null, step: "analyzing", progress: 0.1, message: "Understanding your request..." }));
+      setState((s) => ({ ...s, isSearching: false, error: null, step: "thinking", progress: 0, message: "" }));
       try {
         let res: any;
         // Generate session_id for thread isolation (persist in localStorage)
@@ -278,7 +278,7 @@ export function useSSESearch(): UseSSESearchReturn {
           return;
         }
 
-        setState((s) => ({ ...s, searchId, step: "searching", progress: 0.3, message: res.message || "Searching for candidates... This takes 1-2 minutes." }));
+        setState((s) => ({ ...s, isSearching: true, searchId, step: "searching", progress: 0.15, message: res.message || "Searching for candidates..." }));
 
         // Poll every 5 seconds for up to 15 minutes
         for (let i = 0; i < 180; i++) {
