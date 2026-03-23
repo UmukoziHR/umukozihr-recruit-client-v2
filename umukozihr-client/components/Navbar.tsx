@@ -129,21 +129,13 @@ export function Navbar() {
             href="/search"
             className="group flex items-center gap-2.5 transition-opacity hover:opacity-80"
           >
-            {/* Icon mark: orange "U" in teal circle */}
-            <div
-              className="flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-105"
-              style={{
-                background: "var(--color-brand-teal)",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-              }}
-            >
-              <span
-                className="text-base font-extrabold leading-none"
-                style={{ color: "var(--color-brand-orange)" }}
-              >
-                U
-              </span>
-            </div>
+            {/* Logo */}
+            <img
+              src="/umukozi-logo.png"
+              alt="UmukoziHR"
+              className="h-9 w-9 rounded-full object-cover transition-transform duration-200 group-hover:scale-105"
+              style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}
+            />
             {/* Wordmark */}
             <span className="hidden text-lg font-bold tracking-tight sm:inline-flex items-baseline gap-0">
               <span style={{ color: "var(--color-text)" }}>Umukozi</span>

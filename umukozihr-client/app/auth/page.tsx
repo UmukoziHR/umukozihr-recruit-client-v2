@@ -109,24 +109,19 @@ export default function AuthPage() {
         />
 
         <div className="relative z-10 max-w-md px-8 text-center">
-          {/* Logo mark */}
+          {/* Logo */}
           <div className="mb-8 flex justify-center">
-            <div
-              className="flex items-center justify-center rounded-2xl backdrop-blur-sm"
+            <img
+              src="/umukozi-logo.png"
+              alt="UmukoziHR"
+              className="rounded-full object-cover"
               style={{
                 height: "72px",
                 width: "72px",
-                background: "rgba(255,255,255,0.1)",
-                border: "1px solid rgba(255,255,255,0.15)",
+                boxShadow: "0 4px 16px rgba(0,0,0,0.2)",
+                border: "2px solid rgba(255,255,255,0.15)",
               }}
-            >
-              <span
-                className="text-4xl font-bold"
-                style={{ color: "var(--color-brand-orange)" }}
-              >
-                U
-              </span>
-            </div>
+            />
           </div>
 
           <h1
@@ -180,21 +175,12 @@ export default function AuthPage() {
         <div className="w-full max-w-[440px]">
           {/* Mobile logo -- visible only on small screens */}
           <div className="mb-8 flex items-center justify-center gap-3 lg:hidden">
-            <div
-              className="flex items-center justify-center rounded-xl"
-              style={{
-                height: "44px",
-                width: "44px",
-                background: "var(--color-brand-teal)",
-              }}
-            >
-              <span
-                className="text-lg font-bold"
-                style={{ color: "var(--color-brand-orange)" }}
-              >
-                U
-              </span>
-            </div>
+            <img
+              src="/umukozi-logo.png"
+              alt="UmukoziHR"
+              className="rounded-full object-cover"
+              style={{ height: "44px", width: "44px" }}
+            />
             <span
               className="text-xl font-bold"
               style={{ color: "var(--color-text)" }}
