@@ -109,17 +109,18 @@ export default function AuthPage() {
         />
 
         <div className="relative z-10 max-w-md px-8 text-center">
-          {/* Logo */}
+          {/* Logo icon */}
           <div className="mb-8 flex justify-center">
             <img
-              src="/umukozi-logo.png"
+              src="/umukozi-icon.png"
               alt="UmukoziHR"
-              className="rounded-full object-cover"
+              className="rounded-full object-contain"
               style={{
-                height: "72px",
-                width: "72px",
+                height: "80px",
+                width: "80px",
+                background: "rgba(255,255,255,0.95)",
+                padding: "8px",
                 boxShadow: "0 4px 16px rgba(0,0,0,0.2)",
-                border: "2px solid rgba(255,255,255,0.15)",
               }}
             />
           </div>
@@ -176,10 +177,10 @@ export default function AuthPage() {
           {/* Mobile logo -- visible only on small screens */}
           <div className="mb-8 flex items-center justify-center gap-3 lg:hidden">
             <img
-              src="/umukozi-logo.png"
+              src="/umukozi-icon.png"
               alt="UmukoziHR"
-              className="rounded-full object-cover"
-              style={{ height: "44px", width: "44px" }}
+              className="rounded-full object-contain"
+              style={{ height: "44px", width: "44px", background: "var(--color-surface-elevated)", padding: "4px" }}
             />
             <span
               className="text-xl font-bold"
