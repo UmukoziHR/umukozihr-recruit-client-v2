@@ -267,6 +267,19 @@ class ApiClient {
     return `${BASE_URL}/search/${searchId}/stream`;
   }
 
+  // Memory management
+  async getMemories(): Promise<{ memories: Array<{ id: string; text: string; category: string; created: string }> }> {
+    return this.request("/users/me/memories");
+  }
+
+  async deleteMemory(id: string): Promise<void> {
+    return this.request(`/users/me/memories/${id}`, { method: "DELETE" });
+  }
+
+  async clearMemories(): Promise<void> {
+    return this.request("/users/me/memories", { method: "DELETE" });
+  }
+
   getStreamHeaders(): Record<string, string> {
     const headers: Record<string, string> = {};
     if (this.accessToken) {

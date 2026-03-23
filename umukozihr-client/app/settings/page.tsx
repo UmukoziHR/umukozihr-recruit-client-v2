@@ -3,8 +3,9 @@ import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
+import { api } from "@/lib/api";
 
-const TABS = ["account", "company", "billing", "security", "appearance"] as const;
+const TABS = ["account", "company", "billing", "security", "appearance", "memory"] as const;
 type Tab = (typeof TABS)[number];
 
 const TAB_ICONS: Record<Tab, string> = {
@@ -13,6 +14,7 @@ const TAB_ICONS: Record<Tab, string> = {
   billing: "M21 4H3v16h18V4zM1 10h22",
   security: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
   appearance: "M12 3v1m0 16v1m-8-9H3m18 0h-1m-2.636-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z",
+  memory: "M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z",
 };
 
 const inputStyle: React.CSSProperties = {
@@ -185,6 +187,7 @@ function SettingsPage() {
         {tab === "billing" && <BillingTab user={user} />}
         {tab === "security" && <SecurityTab />}
         {tab === "appearance" && <AppearanceTab />}
+        {tab === "memory" && <MemoryTab />}
       </div>
     </div>
   );
@@ -878,6 +881,101 @@ function AppearanceTab() {
           </button>
         ))}
       </div>
+    </div>
+  );
+}
+
+
+// ── Memory Tab ──
+function MemoryTab() {
+  const [memories, setMemories] = useState<Array<{ id: string; text: string; category: string; created: string }>>([]);
+  const [loading, setLoading] = useState(true);
+
+  const load = async () => {
+    try {
+      setLoading(true);
+      const data = await api.getMemories();
+      setMemories(data.memories || []);
+    } catch { /* empty */ }
+    setLoading(false);
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const deleteOne = async (id: string) => {
+    try {
+      await api.deleteMemory(id);
+      setMemories((prev) => prev.filter((m) => m.id !== id));
+      toast.success("Memory deleted");
+    } catch { toast.error("Failed to delete"); }
+  };
+
+  const clearAll = async () => {
+    if (!confirm("Delete all of Amberlyn's memories about you? This cannot be undone.")) return;
+    try {
+      await api.clearMemories();
+      setMemories([]);
+      toast.success("All memories cleared");
+    } catch { toast.error("Failed to clear"); }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-xl font-semibold mb-1" style={{ color: "var(--color-text)" }}>Amberlyn's Memory</h2>
+        <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+          Amberlyn learns your preferences over time to give better recommendations. Here's what she remembers about you.
+        </p>
+      </div>
+
+      {/* Info callout */}
+      <div className="rounded-xl p-4 flex gap-3" style={{ background: "color-mix(in srgb, var(--color-brand-teal) 8%, var(--color-surface-elevated))", border: "1px solid var(--color-border)" }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 mt-0.5" style={{ color: "var(--color-brand-teal)" }}><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>
+          Memories are automatically extracted from your conversations with Amberlyn. She uses them to personalize future searches and recommendations. You can delete any memory you don't want her to keep.
+        </p>
+      </div>
+
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-t-transparent" style={{ borderColor: "var(--color-brand-orange)", borderTopColor: "transparent" }} />
+        </div>
+      ) : memories.length === 0 ? (
+        <div className="text-center py-12 rounded-xl" style={{ background: "var(--color-surface-elevated)", border: "1px solid var(--color-border)" }}>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mx-auto mb-3" style={{ color: "var(--color-text-muted)" }}><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          <p className="text-sm font-medium mb-1" style={{ color: "var(--color-text)" }}>No memories yet</p>
+          <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>Chat with Amberlyn and she'll start learning your preferences.</p>
+        </div>
+      ) : (
+        <>
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>
+              {memories.length} memor{memories.length === 1 ? "y" : "ies"}
+            </p>
+            <button onClick={clearAll} className="text-xs font-medium px-3 py-1.5 rounded-lg transition-colors" style={{ color: "#dc2626", background: "color-mix(in srgb, #ef4444 8%, transparent)" }}>
+              Clear all
+            </button>
+          </div>
+          <div className="space-y-2">
+            {memories.map((m) => (
+              <div key={m.id} className="flex items-start gap-3 rounded-xl p-4 group" style={{ background: "var(--color-surface-elevated)", border: "1px solid var(--color-border)" }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 mt-0.5" style={{ color: "var(--color-brand-orange)" }}><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm" style={{ color: "var(--color-text)" }}>{m.text}</p>
+                  {m.created && (
+                    <p className="text-xs mt-1" style={{ color: "var(--color-text-muted)" }}>
+                      {new Date(m.created).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    </p>
+                  )}
+                </div>
+                <button onClick={() => deleteOne(m.id)} className="shrink-0 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "#dc2626" }} title="Delete memory">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
