@@ -251,10 +251,10 @@ class ApiClient {
     return Array.isArray(res) ? res : res.searches;
   }
 
-  async chatOnResults(searchId: string, message: string): Promise<{ message: string }> {
+  async chatOnResults(searchId: string, message: string, sessionId?: string | null): Promise<{ message: string }> {
     return this.request(`/search/${searchId}/chat`, {
       method: "POST",
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ message, session_id: sessionId }),
     });
   }
 

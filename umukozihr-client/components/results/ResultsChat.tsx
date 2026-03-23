@@ -10,6 +10,8 @@ interface ChatMsg {
 }
 
 export default function ResultsChat({ searchId }: { searchId: string }) {
+  // Use the same session_id from the search page for unified conversation
+  const sessionId = typeof window !== "undefined" ? localStorage.getItem("chat_session_id") : null;
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -58,7 +60,7 @@ export default function ResultsChat({ searchId }: { searchId: string }) {
     setMessages((prev) => [...prev, { role: "user", content: text }]);
     setLoading(true);
     try {
-      const res = await api.chatOnResults(searchId, text);
+      const res = await api.chatOnResults(searchId, text, sessionId);
       setMessages((prev) => [...prev, { role: "assistant", content: res.message }]);
     } catch {
       setMessages((prev) => [...prev, { role: "assistant", content: "Sorry, I couldn't process that. Please try again." }]);
