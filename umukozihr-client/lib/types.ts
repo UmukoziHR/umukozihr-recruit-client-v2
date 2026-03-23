@@ -41,6 +41,7 @@ export interface CandidateResult {
   matched_skills: string[]; missing_skills: string[];
   scoring_explanation: string; is_open_to_work: boolean; has_founder_experience: boolean;
   photo_url?: string | null;
+  emails?: string[]; phones?: string[]; websites?: string[];
   total_score?: number; name?: string; title?: string; company?: string; score?: number;
   experiences?: Record<string, unknown>[]; green_flags?: string[]; red_flags?: string[];
   willingness_reasons?: string[]; profile_url?: string; avatar_url?: string;

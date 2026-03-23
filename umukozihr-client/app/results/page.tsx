@@ -35,6 +35,7 @@ function ResultsPage() {
   const [sortBy, setSortBy] = useState<SortField>("total_score");
   const [sortAsc, setSortAsc] = useState(false);
   const [filterText, setFilterText] = useState("");
+  const [hideUnlikely, setHideUnlikely] = useState(true);
   const [searchData, setSearchData] = useState<SearchResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -76,6 +77,14 @@ function ResultsPage() {
   const filtered = useMemo(() => {
     let result = [...candidates];
 
+    // Hide unlikely candidates by default
+    if (hideUnlikely) {
+      result = result.filter((c) => {
+        const wl = (c.willingness_likelihood || "").toLowerCase();
+        return wl !== "unlikely" && wl !== "very_unlikely";
+      });
+    }
+
     // Text filter
     if (filterText.trim()) {
       const q = filterText.toLowerCase();
@@ -97,7 +106,7 @@ function ResultsPage() {
     });
 
     return result;
-  }, [candidates, filterText, sortBy, sortAsc]);
+  }, [candidates, filterText, sortBy, sortAsc, hideUnlikely]);
 
   if (loading) {
     return (
@@ -188,6 +197,18 @@ function ResultsPage() {
         </div>
 
         <div className="flex items-center gap-2 ml-auto">
+          {/* Hide unlikely toggle */}
+          <button
+            onClick={() => setHideUnlikely(!hideUnlikely)}
+            className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors"
+            style={{
+              background: hideUnlikely ? "color-mix(in srgb, var(--color-brand-teal) 10%, transparent)" : "var(--color-surface-secondary)",
+              color: hideUnlikely ? "var(--color-brand-teal)" : "var(--color-text-muted)",
+              border: hideUnlikely ? "1px solid var(--color-brand-teal)" : "1px solid var(--color-border)",
+            }}
+          >
+            {hideUnlikely ? "Recommended" : "Show All"}
+          </button>
           {/* Sort */}
           <div className="flex items-center gap-1.5">
             <SlidersHorizontal className="h-4 w-4 text-gray-400" />

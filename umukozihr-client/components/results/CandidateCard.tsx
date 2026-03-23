@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MapPin, Briefcase, Building2, Eye, Sparkles } from "lucide-react";
+import { MapPin, Briefcase, Building2, Eye, Sparkles, Mail, Phone, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { CandidateResult } from "@/lib/types";
 
@@ -82,6 +82,22 @@ export function CandidateCard({ candidate }: { candidate: CandidateResult }) {
             <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-[11px] font-medium text-gray-500">
               +{(c.skills ?? []).length - 3}
             </span>
+          )}
+        </div>
+      )}
+
+      {/* Contact badges */}
+      {((c.emails && c.emails.length > 0) || (c.phones && c.phones.length > 0)) && (
+        <div className="flex items-center gap-2 pt-2">
+          {c.emails && c.emails.length > 0 && (
+            <a href={`mailto:${c.emails[0]}`} className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors" title={c.emails[0]}>
+              <Mail className="h-3 w-3" /> Email
+            </a>
+          )}
+          {c.phones && c.phones.length > 0 && (
+            <a href={`tel:${c.phones[0]}`} className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium bg-green-50 text-green-600 hover:bg-green-100 transition-colors" title={c.phones[0]}>
+              <Phone className="h-3 w-3" /> Phone
+            </a>
           )}
         </div>
       )}
