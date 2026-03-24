@@ -9,6 +9,7 @@ import { useSSESearch } from "@/hooks/useSSESearch";
 import { SearchChat } from "@/components/search/SearchChat";
 import { ManualForm } from "@/components/search/ManualForm";
 import { WorkflowProgress } from "@/components/search/WorkflowProgress";
+import { AccountTypeSelector } from "@/components/auth/AccountTypeSelector";
 import {
   MessageSquare,
   SlidersHorizontal,
@@ -27,9 +28,11 @@ export default function SearchPage() {
   const [mode, setMode] = useState<SearchMode>("chat");
   const [deepResearch, setDeepResearch] = useState(false);
   const [tipDismissed, setTipDismissed] = useState(false);
-  const { user } = useAuth();
+  const [showAccountTypeSelector, setShowAccountTypeSelector] = useState(false);
+  const { user, refreshUser } = useAuth();
   const { balance, refresh } = useCredits();
   const hasCompanyProfile = !!(user?.company_profile && (user.company_profile as any)?.company_name);
+  const needsAccountType = user && !(user as any).account_type;
   const {
     startSearch, step, progress, message, candidates, error,
     isSearching, searchId, reset,
@@ -38,10 +41,16 @@ export default function SearchPage() {
   const creditCost = deepResearch ? 3 : 1;
   const searchComplete = step === "complete" && candidates.length > 0;
 
-  // No auto-redirect - let the user click "View Results" naturally in chat
+  // Show account type selector on first visit if not set
+  useEffect(() => {
+    if (needsAccountType) setShowAccountTypeSelector(true);
+  }, [needsAccountType]);
 
   return (
     <AppShell flush>
+      {showAccountTypeSelector && (
+        <AccountTypeSelector onComplete={() => { setShowAccountTypeSelector(false); if (refreshUser) refreshUser(); }} />
+      )}
       <div className="flex flex-col lg:flex-row h-full">
           {/* MOBILE: Top bar with key controls */}
           <div className="flex lg:hidden items-center gap-2 px-3 py-2 shrink-0 overflow-x-auto" style={{ borderBottom: "1px solid var(--color-border)", background: "var(--color-surface)" }}>

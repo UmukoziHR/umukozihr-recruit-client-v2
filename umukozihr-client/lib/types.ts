@@ -8,10 +8,11 @@ export interface PasswordResetConfirm { email: string; code: string; new_passwor
 // === User ===
 export interface User {
   id: string; email: string; full_name: string; company: string; job_title: string;
-  company_profile: CompanyProfile | null; is_active: boolean; is_verified: boolean; is_admin: boolean;
+  company_profile: CompanyProfile | null; account_type: "company" | "agency";
+  is_active: boolean; is_verified: boolean; is_admin: boolean;
   subscription_tier: string; credit_balance: number; created_at: string; updated_at: string;
 }
-export interface UserUpdate { full_name?: string; company?: string; job_title?: string; company_profile?: CompanyProfile }
+export interface UserUpdate { full_name?: string; company?: string; job_title?: string; company_profile?: CompanyProfile; account_type?: string }
 export interface CompanyProfile {
   company_name?: string; industry?: string; stage?: string; team_size?: number;
   compensation_philosophy?: string; remote_policy?: string; mission?: string; website?: string;
