@@ -48,19 +48,8 @@ export default function CandidateDetailPage() {
     async function load() {
       try {
         setLoading(true);
-        // Try to get from the latest search results
-        const searches = await api.listSearches();
-        if (searches.length > 0) {
-          const search = await api.getSearch(searches[0].id);
-          const found = search.candidates?.find(
-            (c: CandidateResult) => String(c.id) === id
-          );
-          if (found) {
-            setCandidate(found);
-            return;
-          }
-        }
-        setError("Candidate not found");
+        const data = await api.getCandidate(id);
+        setCandidate(data);
       } catch (err: unknown) {
         setError(
           err instanceof Error ? err.message : "Failed to load candidate"

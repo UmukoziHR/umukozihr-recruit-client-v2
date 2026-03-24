@@ -244,6 +244,10 @@ class ApiClient {
     return this.request(`/search/${id}`);
   }
 
+  async getCandidate(candidateId: string): Promise<any> {
+    return this.request(`/search/candidate/${candidateId}`);
+  }
+
   async listSearches(page = 1, pageSize = 20): Promise<SearchResponse[]> {
     const res = await this.request<{ searches: SearchResponse[]; total: number } | SearchResponse[]>(
       `/search?page=${page}&per_page=${pageSize}`
