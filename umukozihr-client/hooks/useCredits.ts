@@ -23,11 +23,13 @@ export function useCredits(): UseCreditsReturn {
       return;
     }
     try {
+      // Don't reset credits to null while loading - keep previous value visible
       setLoading(true);
       const balance = await api.getCreditBalance();
       setCredits(balance);
       setError(null);
     } catch (err: unknown) {
+      // Don't clear credits on error - keep showing last known value
       setError((err as { detail?: string })?.detail || "Failed to load credits");
     } finally {
       setLoading(false);
@@ -38,5 +40,6 @@ export function useCredits(): UseCreditsReturn {
     refresh();
   }, [refresh]);
 
-  return { credits, balance: credits?.balance ?? 0, loading, error, refresh };
+  // Don't show 0 while loading - show null (renders as "--" in UI)
+  return { credits, balance: credits?.balance ?? (loading ? -1 : 0), loading, error, refresh };
 }

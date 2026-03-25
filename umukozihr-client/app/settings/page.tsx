@@ -205,6 +205,7 @@ function AccountTab({
     full_name: user.full_name || "",
     company: user.company || "",
     job_title: user.job_title || "",
+    account_type: user.account_type || "company",
   });
   const [saving, setSaving] = useState(false);
 
@@ -288,6 +289,39 @@ function AccountTab({
             placeholder="e.g. Head of Talent"
           />
         </div>
+
+        {/* Account Type */}
+        <div>
+          <label className="block text-sm font-medium mb-2" style={{ color: "var(--color-text-secondary)" }}>
+            Account Type
+          </label>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => setForm((f) => ({ ...f, account_type: "company" }))}
+              className="flex-1 rounded-xl p-4 text-left transition-all"
+              style={{
+                border: form.account_type === "company" ? "2px solid var(--color-brand-orange)" : "1px solid var(--color-border)",
+                background: form.account_type === "company" ? "color-mix(in srgb, var(--color-brand-orange) 6%, var(--color-surface-elevated))" : "var(--color-surface)",
+              }}
+            >
+              <span className="text-sm font-semibold block" style={{ color: "var(--color-text)" }}>Hiring for my company</span>
+              <span className="text-xs mt-1 block" style={{ color: "var(--color-text-muted)" }}>In-house recruiter or hiring manager</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setForm((f) => ({ ...f, account_type: "agency" }))}
+              className="flex-1 rounded-xl p-4 text-left transition-all"
+              style={{
+                border: form.account_type === "agency" ? "2px solid var(--color-brand-orange)" : "1px solid var(--color-border)",
+                background: form.account_type === "agency" ? "color-mix(in srgb, var(--color-brand-orange) 6%, var(--color-surface-elevated))" : "var(--color-surface)",
+              }}
+            >
+              <span className="text-sm font-semibold block" style={{ color: "var(--color-text)" }}>Recruiting agency</span>
+              <span className="text-xs mt-1 block" style={{ color: "var(--color-text-muted)" }}>Recruit on behalf of client companies</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <button
@@ -351,8 +385,7 @@ function CompanyTab({
           Company Profile
         </h2>
         <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-          This information is used by the AI to assess candidate willingness to
-          join your company.
+          This information helps the AI assess candidate fit and willingness.
         </p>
       </div>
 
@@ -379,8 +412,7 @@ function CompanyTab({
           <path d="M12 16v-4M12 8h.01" />
         </svg>
         <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>
-          A complete company profile helps the AI better evaluate whether
-          candidates would be a good cultural and career fit for your team.
+          A complete profile helps the AI evaluate candidate fit. For agencies, this is your agency profile — you can specify client details per search.
         </p>
       </div>
 
