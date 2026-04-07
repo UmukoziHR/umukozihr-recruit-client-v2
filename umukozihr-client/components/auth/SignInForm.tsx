@@ -41,10 +41,8 @@ export function SignInForm({ onForgotPassword }: SignInFormProps) {
       await login({ email: data.email, password: data.password });
       toast.success("Welcome back!");
     } catch (error: any) {
-      const message =
-        error?.response?.data?.detail ||
-        error?.message ||
-        "Invalid email or password";
+      // API client throws { detail: string } — not axios/native Error shape
+      const message = error?.detail || "Invalid email or password";
       toast.error(message);
     } finally {
       setIsLoading(false);

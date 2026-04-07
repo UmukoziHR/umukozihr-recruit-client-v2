@@ -77,12 +77,9 @@ function ResultsPage() {
   const filtered = useMemo(() => {
     let result = [...candidates];
 
-    // Hide unlikely candidates by default
+    // "Recommended" = 70%+ match score. "Show All" = no filter.
     if (hideUnlikely) {
-      result = result.filter((c) => {
-        const wl = (c.willingness_likelihood || "").toLowerCase();
-        return wl !== "unlikely" && wl !== "very_unlikely";
-      });
+      result = result.filter((c) => (c.match_score ?? 0) >= 0.70);
     }
 
     // Text filter
@@ -197,18 +194,31 @@ function ResultsPage() {
         </div>
 
         <div className="flex items-center gap-2 ml-auto">
-          {/* Hide unlikely toggle */}
-          <button
-            onClick={() => setHideUnlikely(!hideUnlikely)}
-            className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors"
-            style={{
-              background: hideUnlikely ? "color-mix(in srgb, var(--color-brand-teal) 10%, transparent)" : "var(--color-surface-secondary)",
-              color: hideUnlikely ? "var(--color-brand-teal)" : "var(--color-text-muted)",
-              border: hideUnlikely ? "1px solid var(--color-brand-teal)" : "1px solid var(--color-border)",
-            }}
-          >
-            {hideUnlikely ? "Recommended" : "Show All"}
-          </button>
+          {/* Recommended / Show All segmented control */}
+          <div className="inline-flex rounded-lg border border-gray-200 bg-gray-50 p-0.5 text-xs font-medium">
+            <button
+              onClick={() => setHideUnlikely(true)}
+              className={cn(
+                "rounded-md px-3 py-1.5 transition-all",
+                hideUnlikely
+                  ? "bg-white text-[hsl(180,50%,23%)] shadow-sm border border-gray-200"
+                  : "text-gray-400 hover:text-gray-600"
+              )}
+            >
+              ⭐ Recommended ({candidates.filter(c => (c.match_score ?? 0) >= 0.70).length})
+            </button>
+            <button
+              onClick={() => setHideUnlikely(false)}
+              className={cn(
+                "rounded-md px-3 py-1.5 transition-all",
+                !hideUnlikely
+                  ? "bg-white text-gray-800 shadow-sm border border-gray-200"
+                  : "text-gray-400 hover:text-gray-600"
+              )}
+            >
+              Show All ({candidates.length})
+            </button>
+          </div>
           {/* Sort */}
           <div className="flex items-center gap-1.5">
             <SlidersHorizontal className="h-4 w-4 text-gray-400" />

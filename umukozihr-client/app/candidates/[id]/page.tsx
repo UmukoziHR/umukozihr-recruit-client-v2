@@ -97,40 +97,50 @@ export default function CandidateDetailPage() {
   const matchedSkills = c.matched_skills ?? [];
   const missingSkills = c.missing_skills ?? [];
   const allSkills = c.skills ?? [];
+  // Split matched skills into explicit vs inferred (from experience)
+  const inferredSkills = matchedSkills.filter((s: string) => s.toLowerCase().includes("(inferred)"));
+  const explicitMatchedSkills = matchedSkills.filter((s: string) => !s.toLowerCase().includes("(inferred)"));
   const experience = c.experience ?? [];
   const education = c.education ?? [];
   const willingnessReasons = c.willingness_reasoning ?? [];
   const greenFlags = c.willingness_green_flags ?? c.green_flags ?? [];
   const redFlags = c.willingness_red_flags ?? c.red_flags ?? [];
 
+  // Each dimension has a different max weight — normalize to 0-100% for display
+  // Title: max 0.30, Skills: max 0.30, Experience: max 0.20, Location: max 0.20
   const scoreBreakdown = [
     {
       label: "Overall Match",
-      value: c.match_score ?? c.total_score ?? 0,
+      value: c.match_score ?? 0,
+      max: 1.0,
       icon: Target,
       color: "text-[hsl(20,100%,55%)]",
     },
     {
       label: "Title Match",
       value: c.title_score ?? 0,
+      max: 0.30,
       icon: Briefcase,
       color: "text-blue-600",
     },
     {
       label: "Skills Match",
       value: c.skills_score ?? 0,
+      max: 0.30,
       icon: Star,
       color: "text-purple-600",
     },
     {
       label: "Experience",
       value: c.experience_score ?? 0,
+      max: 0.20,
       icon: Calendar,
       color: "text-teal-600",
     },
     {
       label: "Location",
       value: c.location_score ?? 0,
+      max: 0.20,
       icon: Globe,
       color: "text-green-600",
     },
@@ -232,7 +242,8 @@ export default function CandidateDetailPage() {
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-6">
         {scoreBreakdown.map((score) => {
           const Icon = score.icon;
-          const pct = Math.round(score.value * 100);
+          // Normalize to 0-100% relative to each dimension's max weight
+          const pct = Math.round((score.value / score.max) * 100);
           return (
             <div
               key={score.label}
@@ -245,6 +256,14 @@ export default function CandidateDetailPage() {
           );
         })}
       </div>
+
+      {/* Scoring explanation */}
+      {c.scoring_explanation && (
+        <div className="rounded-xl border border-gray-200 bg-gray-50 px-5 py-3 mb-6 text-sm text-gray-600 leading-relaxed">
+          <span className="font-medium text-gray-800">Why this score: </span>
+          {c.scoring_explanation}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         {/* Willingness section */}
@@ -278,7 +297,7 @@ export default function CandidateDetailPage() {
           </div>
 
           {/* Reasoning */}
-          {willingnessReasons.length > 0 && (
+          {willingnessReasons.length > 0 && willingnessReasons[0] !== "No company profile provided — willingness not assessed" && (
             <div className="space-y-2 mb-4">
               <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Assessment
@@ -295,6 +314,13 @@ export default function CandidateDetailPage() {
                 ))}
               </ul>
             </div>
+          )}
+          {willingnessReasons.length > 0 && willingnessReasons[0] === "No company profile provided — willingness not assessed" && (
+            <p className="text-xs text-gray-500 mb-4">
+              Add your company profile in{" "}
+              <a href="/settings" className="text-[hsl(20,100%,55%)] hover:underline font-medium">Settings</a>{" "}
+              to get personalised willingness predictions for each candidate.
+            </p>
           )}
 
           {/* Flags */}
@@ -348,13 +374,24 @@ export default function CandidateDetailPage() {
                 Matched
               </p>
               <div className="flex flex-wrap gap-2">
-                {matchedSkills.map((skill: string) => (
+                {explicitMatchedSkills.map((skill: string) => (
                   <span
                     key={skill}
                     className="inline-flex items-center gap-1 rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700"
                   >
                     <CheckCircle2 className="h-3 w-3" />
                     {skill}
+                  </span>
+                ))}
+                {inferredSkills.map((skill: string) => (
+                  <span
+                    key={skill}
+                    title="Inferred from experience — not listed explicitly on profile"
+                    className="inline-flex items-center gap-1 rounded-full bg-blue-50 border border-blue-200 px-3 py-1 text-xs font-medium text-blue-700"
+                  >
+                    <CheckCircle2 className="h-3 w-3" />
+                    {skill.replace(/\s*\(inferred\)/i, "")}
+                    <span className="text-[9px] text-blue-500 font-normal ml-0.5">inferred</span>
                   </span>
                 ))}
               </div>

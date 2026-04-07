@@ -32,7 +32,8 @@ export function CandidateListItem({ candidate }: CandidateListItemProps) {
   const matchPct = Math.round((c.match_score ?? c.score ?? 0) * 100);
   const willingness = getWillingnessColor(c);
   const willingnessPct = Math.round(((c.willingness_score ?? 0) / 20) * 100);
-  const totalPct = Math.round((c.total_score ?? 0) * 100);
+  // total_score is already 0-100 from the API (match*60 + willingness*40)
+  const totalPct = Math.round(c.total_score ?? 0);
   const skills = (c.skills ?? []).slice(0, 4);
   const isOpenToWork = c.is_open_to_work ?? false;
 
