@@ -93,3 +93,7 @@ export interface AdminUser {
 export interface AdminCreditGrant { amount: number; reason: string }
 
 export interface ApiError { detail: string }
+
+// === Email Drafting ===
+export interface EmailDraft { subject: string; body: string }
+export interface EmailDraftResponse { formal: EmailDraft; casual: EmailDraft }

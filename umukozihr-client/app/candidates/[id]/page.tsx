@@ -21,9 +21,14 @@ import {
   Target,
   Globe,
   Award,
+  Mail,
+  X,
+  Copy,
+  Send,
+  RefreshCw,
 } from "lucide-react";
 import { cn, formatScore } from "@/lib/utils";
-import type { CandidateResult } from "@/lib/types";
+import type { CandidateResult, EmailDraft, EmailDraftResponse } from "@/lib/types";
 
 function getWillingnessColor(score: number | undefined | null) {
   // Score is 0-20 scale
@@ -43,6 +48,15 @@ export default function CandidateDetailPage() {
   const [candidate, setCandidate] = useState<CandidateResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Email draft modal state (must be before early returns)
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
+  const [emailDrafts, setEmailDrafts] = useState<EmailDraftResponse | null>(null);
+  const [emailTab, setEmailTab] = useState<"formal" | "casual">("formal");
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [refineText, setRefineText] = useState("");
+  const [refining, setRefining] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -93,6 +107,51 @@ export default function CandidateDetailPage() {
   }
 
   const c = candidate;
+  const hasEmail = c.emails && c.emails.length > 0;
+
+  const handleDraftEmail = async () => {
+    setEmailLoading(true);
+    try {
+      const drafts = await api.draftEmail(c.id);
+      setEmailDrafts(drafts);
+      setEmailModalOpen(true);
+    } catch (err: any) {
+      console.error("Draft email failed:", err);
+    } finally {
+      setEmailLoading(false);
+    }
+  };
+
+  const handleRefine = async () => {
+    if (!refineText.trim() || !emailDrafts) return;
+    setRefining(true);
+    try {
+      const current = emailDrafts[emailTab];
+      const refined = await api.refineEmail(current.subject, current.body, refineText);
+      setEmailDrafts({ ...emailDrafts, [emailTab]: refined });
+      setRefineText("");
+    } catch (err: any) {
+      console.error("Refine failed:", err);
+    } finally {
+      setRefining(false);
+    }
+  };
+
+  const handleOpenInGmail = () => {
+    if (!emailDrafts || !hasEmail) return;
+    const draft = emailDrafts[emailTab];
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(c.emails![0])}&su=${encodeURIComponent(draft.subject)}&body=${encodeURIComponent(draft.body)}`;
+    window.open(gmailUrl, "_blank");
+  };
+
+  const handleCopy = () => {
+    if (!emailDrafts) return;
+    const draft = emailDrafts[emailTab];
+    navigator.clipboard.writeText(`Subject: ${draft.subject}\n\n${draft.body}`);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   const willingness = getWillingnessColor(c.willingness_score);
   const matchedSkills = c.matched_skills ?? [];
   const missingSkills = c.missing_skills ?? [];
@@ -205,18 +264,30 @@ export default function CandidateDetailPage() {
                 </div>
               </div>
 
-              {/* LinkedIn link */}
-              {c.linkedin_url && (
-                <a
-                  href={c.linkedin_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-shrink-0 inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700 transition-colors"
-                >
-                  <ExternalLink className="h-4 w-4" />
-                  LinkedIn
-                </a>
-              )}
+              {/* Action buttons */}
+              <div className="flex items-center gap-2 flex-shrink-0">
+                {c.linkedin_url && (
+                  <a
+                    href={c.linkedin_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700 transition-colors"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    LinkedIn
+                  </a>
+                )}
+                {hasEmail && (
+                  <button
+                    onClick={handleDraftEmail}
+                    disabled={emailLoading}
+                    className="inline-flex items-center gap-2 rounded-lg border border-[hsl(20,100%,55%)] bg-[hsl(20,100%,55%)] px-4 py-2 text-sm font-medium text-white hover:bg-[hsl(20,100%,48%)] transition-colors disabled:opacity-60"
+                  >
+                    {emailLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" />}
+                    Draft Email
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Tags */}
@@ -525,6 +596,114 @@ export default function CandidateDetailPage() {
         </div>
       )}
     </div>
+
+      {/* Email Draft Modal */}
+      {emailModalOpen && emailDrafts && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col">
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+              <h2 className="text-base font-semibold text-gray-900">
+                Draft Email to {(c.full_name ?? c.name ?? "Candidate").split(" ")[0]}
+              </h2>
+              <button
+                onClick={() => { setEmailModalOpen(false); setRefineText(""); }}
+                className="p-1 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                <X className="h-4 w-4 text-gray-400" />
+              </button>
+            </div>
+
+            {/* Tabs */}
+            <div className="px-5 pt-3">
+              <div className="inline-flex rounded-lg border border-gray-200 bg-gray-50 p-0.5 text-xs font-medium">
+                <button
+                  onClick={() => setEmailTab("formal")}
+                  className={cn(
+                    "rounded-md px-4 py-1.5 transition-all",
+                    emailTab === "formal"
+                      ? "bg-white text-[hsl(180,50%,23%)] shadow-sm border border-gray-200"
+                      : "text-gray-400 hover:text-gray-600"
+                  )}
+                >
+                  Formal
+                </button>
+                <button
+                  onClick={() => setEmailTab("casual")}
+                  className={cn(
+                    "rounded-md px-4 py-1.5 transition-all",
+                    emailTab === "casual"
+                      ? "bg-white text-[hsl(180,50%,23%)] shadow-sm border border-gray-200"
+                      : "text-gray-400 hover:text-gray-600"
+                  )}
+                >
+                  Casual
+                </button>
+              </div>
+            </div>
+
+            {/* Email Preview */}
+            <div className="flex-1 overflow-y-auto px-5 py-3 space-y-3">
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Subject</label>
+                <p className="text-sm font-medium text-gray-900 mt-1 bg-gray-50 rounded-lg px-3 py-2">
+                  {emailDrafts[emailTab].subject}
+                </p>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Body</label>
+                <div className="text-sm text-gray-700 mt-1 bg-gray-50 rounded-lg px-3 py-3 whitespace-pre-wrap leading-relaxed">
+                  {emailDrafts[emailTab].body}
+                </div>
+              </div>
+
+              {/* Refine Input */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={refineText}
+                  onChange={(e) => setRefineText(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleRefine()}
+                  placeholder="Make it shorter, mention equity, add a PS..."
+                  className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[hsl(180,50%,23%)]/20 focus:border-[hsl(180,50%,23%)]"
+                />
+                <button
+                  onClick={handleRefine}
+                  disabled={refining || !refineText.trim()}
+                  className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 transition-colors"
+                >
+                  {refining ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
+                  Refine
+                </button>
+              </div>
+            </div>
+
+            {/* Footer Actions */}
+            <div className="flex items-center gap-2 px-5 py-4 border-t border-gray-100">
+              <button
+                onClick={handleOpenInGmail}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none">
+                  <path d="M22 6L12 13L2 6V4L12 11L22 4V6Z" fill="#EA4335"/>
+                  <path d="M2 6L12 13V22H4C2.9 22 2 21.1 2 20V6Z" fill="#34A853"/>
+                  <path d="M22 6V20C22 21.1 21.1 22 20 22H12V13L22 6Z" fill="#FBBC05"/>
+                  <path d="M22 4V6L12 13L2 6V4C2 2.9 2.9 2 4 2H20C21.1 2 22 2.9 22 4Z" fill="#C5221F"/>
+                </svg>
+                Open in Gmail
+              </button>
+              <button
+                onClick={handleCopy}
+                className="flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                {copied ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                {copied ? "Copied!" : "Copy"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </AppShell>
   );
 }

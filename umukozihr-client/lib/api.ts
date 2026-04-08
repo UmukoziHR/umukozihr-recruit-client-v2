@@ -5,6 +5,8 @@ import type {
   OtpVerifyRequest,
   PasswordResetConfirm,
   User,
+  EmailDraft,
+  EmailDraftResponse,
   UserUpdate,
   CreditBalance,
   CreditHistory,
@@ -294,6 +296,22 @@ class ApiClient {
 
   get token(): string | null {
     return this.accessToken;
+  }
+
+  // ── Email Drafting ──
+
+  async draftEmail(candidateId: string, instructions?: string): Promise<EmailDraftResponse> {
+    return this.request("/email/draft", {
+      method: "POST",
+      body: JSON.stringify({ candidate_id: candidateId, instructions: instructions || "" }),
+    });
+  }
+
+  async refineEmail(subject: string, body: string, feedback: string): Promise<EmailDraft> {
+    return this.request("/email/refine", {
+      method: "POST",
+      body: JSON.stringify({ subject, body, feedback }),
+    });
   }
 
   // ── Subscription ──

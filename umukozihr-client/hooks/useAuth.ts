@@ -44,6 +44,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       setUser(null);
       api.clearTokens();
+      if (typeof window !== "undefined") {
+        window.location.href = "/auth";
+      }
     } finally {
       setLoading(false);
     }

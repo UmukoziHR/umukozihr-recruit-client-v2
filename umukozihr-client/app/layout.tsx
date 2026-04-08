@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={inter.variable}>
+    <html lang="en" suppressHydrationWarning className={inter.variable} data-scroll-behavior="smooth">
       <body className="antialiased" suppressHydrationWarning>
         <ThemeProvider>
           <AuthProvider>
