@@ -86,6 +86,7 @@ export default function SearchPage() {
                 message={message}
                 progress={progress}
                 searchId={searchId}
+                onNewSession={() => { reset(); refresh(); }}
               />
             ) : (
               <div className="h-full overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 max-w-3xl">

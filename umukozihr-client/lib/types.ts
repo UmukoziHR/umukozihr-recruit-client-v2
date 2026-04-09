@@ -54,7 +54,7 @@ export interface SearchResponse {
   requirements?: Record<string, unknown>; total_found: number; total_approved: number;
   credits_used: number; execution_time_ms?: number;
   candidates: CandidateResult[]; created_at: string; completed_at?: string;
-  search_time?: number;
+  search_time?: number; session_id?: string;
 }
 
 export interface ClarificationResponse { needs_clarification: boolean; missing_fields: string[]; message: string }
@@ -97,3 +97,14 @@ export interface ApiError { detail: string }
 // === Email Drafting ===
 export interface EmailDraft { subject: string; body: string }
 export interface EmailDraftResponse { formal: EmailDraft; casual: EmailDraft }
+
+// === Chat Conversations ===
+export interface ChatConversation {
+  id: string; title: string; created_at: string; updated_at: string;
+  session_id?: string | null; search_id?: string | null; last_message?: string;
+}
+export interface ChatMessageItem { role: string; content: string; created_at: string }
+export interface ChatConversationDetail {
+  conversation_id: string; title: string; messages: ChatMessageItem[];
+  session_id?: string | null; search_id?: string | null;
+}

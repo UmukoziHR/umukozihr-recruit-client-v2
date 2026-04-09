@@ -7,6 +7,8 @@ import type {
   User,
   EmailDraft,
   EmailDraftResponse,
+  ChatConversation,
+  ChatConversationDetail,
   UserUpdate,
   CreditBalance,
   CreditHistory,
@@ -312,6 +314,16 @@ class ApiClient {
       method: "POST",
       body: JSON.stringify({ subject, body, feedback }),
     });
+  }
+
+  // ── Chat Conversations ──
+
+  async listConversations(): Promise<{ conversations: ChatConversation[] }> {
+    return this.request("/chat/conversations");
+  }
+
+  async getChatHistory(conversationId: string): Promise<ChatConversationDetail> {
+    return this.request(`/chat/history/${conversationId}`);
   }
 
   // ── Subscription ──

@@ -261,6 +261,9 @@ export function useSSESearch(): UseSSESearchReturn {
         }
         if (typeof input === "string") {
           res = await api.searchByPrompt({ prompt: input, use_deep_research: deepResearch, session_id: sessionId, history: history || [] });
+          if (typeof window !== "undefined" && res?.session_id) {
+            localStorage.setItem("chat_session_id", res.session_id);
+          }
         } else {
           res = await api.searchManual({ ...input, use_deep_research: deepResearch });
         }
